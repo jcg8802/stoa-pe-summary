@@ -217,6 +217,11 @@
     <div class="lbl">Occupancy Rate</div>
     <div class="chg" style="color:var(--gold)">Target: 80–85%</div>
   </div>
+  <div class="metric" style="background:#fff5f5;border-right:1px solid var(--light)">
+    <div class="val" style="color:var(--red)">91%</div>
+    <div class="lbl">Medicaid Payer Mix</div>
+    <div class="chg dn">⚠ IMD waiver dependent</div>
+  </div>
   <div class="metric">
     <div class="val">$969K</div>
     <div class="lbl">FCF After Draws</div>
@@ -277,7 +282,10 @@
       <div style="font-size:0.68rem;color:#C00000;font-weight:600;margin-top:2px">$264K at risk (90+)</div>
     </div>
   </div>
-  <div style="margin-top:8px;font-size:0.77rem;color:#92400e"><strong>&#9888; Action required:</strong> $264K in 90+ days A/R (46.9% of total) — $215K over 120 days has 40–60% probability of write-off. Immediate denial rework needed before any acquisition closes.</div>
+  <div style="margin-top:8px;display:flex;gap:16px;flex-wrap:wrap">
+    <div style="font-size:0.77rem;color:#92400e"><strong>&#9888; A/R action:</strong> $264K in 90+ days — $215K over 120 days has 40–60% write-off risk. Rework immediately.</div>
+    <div style="font-size:0.77rem;color:#C00000;font-weight:700;background:#fff1f2;padding:4px 10px;border-radius:4px">&#9888; CRITICAL: 91% Medicaid payer mix — entire residential revenue depends on 1115 waiver (expires Dec 31, 2027)</div>
+  </div>
 </div>
 <div class="container">
 
@@ -310,49 +318,52 @@
 
   <!-- VALUATION SCENARIOS -->
   <div class="section">
-    <div class="section-header blue">Valuation Analysis · Basis: FY2026E Adj. EBITDA $2,594,361 · Net Debt: $5,532,078</div>
+    <div class="section-header blue">Valuation Analysis · Basis: FY2026E Adj. EBITDA $2,594,361 · Net Debt: $5,532,078 · ⚠ 91% Medicaid Discount Applied</div>
     <div class="section-body">
+      <div style="background:#fff5f5;border:1px solid #fca5a5;border-radius:6px;padding:12px 16px;margin-bottom:16px;font-size:0.82rem">
+        <strong style="color:var(--red)">Payer Mix Adjustment:</strong> 91% Medicaid concentration + 1115 waiver expires Dec 2027 warrants a 1.5–2.0× discount vs. commercial-mix comps. Base case revised from 9× → 7× until waiver renewal confirmed and commercial mix improves to 25%+. The multiple expansion path from 7× → 10× is itself a value creation thesis worth <strong>+$7.8M equity</strong> with zero EBITDA change.
+      </div>
       <div class="scenario-grid">
         <div class="scenario-card bear">
           <div class="sc-label">Bear Case</div>
-          <div class="sc-mult">7.0× EBITDA</div>
-          <div class="sc-ev">$18.2M</div>
+          <div class="sc-mult">5.0× EBITDA</div>
+          <div class="sc-ev">$13.0M</div>
           <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
-          <div class="sc-eq">Equity Value: <span>$12.6M</span></div>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Single-site discount</div>
+          <div class="sc-eq">Equity Value: <span>$7.5M</span></div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Waiver risk + Medicaid discount</div>
         </div>
         <div class="scenario-card base">
           <div class="sc-label">Base Case</div>
+          <div class="sc-mult">7.0× EBITDA</div>
+          <div class="sc-ev">$18.2M</div>
+          <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
+          <div class="sc-eq">Equity Value: <span>$12.7M</span></div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">91% Medicaid discount applied</div>
+        </div>
+        <div class="scenario-card bull">
+          <div class="sc-label">Bull Case</div>
           <div class="sc-mult">9.0× EBITDA</div>
           <div class="sc-ev">$23.3M</div>
           <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
           <div class="sc-eq">Equity Value: <span>$17.8M</span></div>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Fair market value</div>
-        </div>
-        <div class="scenario-card bull">
-          <div class="sc-label">Bull Case</div>
-          <div class="sc-mult">11.0× EBITDA</div>
-          <div class="sc-ev">$28.5M</div>
-          <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
-          <div class="sc-eq">Equity Value: <span>$23.0M</span></div>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Growth premium</div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Waiver renewed + mix improves</div>
         </div>
         <div class="scenario-card upside">
-          <div class="sc-label">Upside</div>
-          <div class="sc-mult">13.0× EBITDA</div>
-          <div class="sc-ev">$33.7M</div>
-          <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
-          <div class="sc-eq">Equity Value: <span>$28.2M</span></div>
-          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Post roll-up platform</div>
+          <div class="sc-label">Platform Upside</div>
+          <div class="sc-mult">11.0× EBITDA</div>
+          <div class="sc-ev">$38.5M</div>
+          <div class="sc-label" style="font-size:0.68rem;margin-top:2px">EV on $3.5M EBITDA</div>
+          <div class="sc-eq">Equity Value: <span>$33.1M</span></div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">25%+ commercial + roll-up</div>
         </div>
       </div>
       <div class="ev-bar-wrap" style="margin-top:24px">
-        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:600">Enterprise Value Range: $18.2M — $33.7M</div>
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:600">Enterprise Value Range: $13.0M (Bear) — $38.5M (Platform Upside at 11× / $3.5M EBITDA)</div>
         <div class="ev-bar-track"><div class="ev-bar-fill" style="width:100%"></div></div>
-        <div class="ev-labels"><span>$18.2M Bear</span><span>$23.3M Base</span><span>$28.5M Bull</span><span>$33.7M Upside</span></div>
+        <div class="ev-labels"><span>$13.0M Bear</span><span>$18.2M Base</span><span>$23.3M Bull</span><span>$38.5M Platform</span></div>
       </div>
-      <div style="margin-top:20px;background:#f8fafc;border-radius:4px;padding:16px;font-size:0.82rem;color:var(--muted)">
-        <strong style="color:var(--navy)">Revenue Multiple Cross-Check:</strong>&nbsp; 1.0× Rev = $7.3M EV &nbsp;|&nbsp; 1.5× = $10.9M &nbsp;|&nbsp; 2.0× = $14.5M &nbsp;|&nbsp; 2.5× = $18.2M &nbsp;—&nbsp; Revenue multiples suggest floor around 1.5–2.0×; EBITDA multiples are the better valuation anchor given strong cash generation.
+      <div style="margin-top:16px;background:#eff6ff;border-radius:4px;padding:16px;font-size:0.82rem;color:var(--text)">
+        <strong style="color:var(--navy)">The Multiple Expansion Thesis:</strong> The real PE play is buying a 7× Medicaid-heavy asset, renewing the 1115 waiver, growing commercial mix from 9% → 25%+, and <em>re-rating</em> to 10–11× on exit. That multiple expansion alone on the same $2.6M EBITDA = <strong style="color:var(--green)">+$7.8M equity value with zero operational improvement.</strong> The EBITDA growth adds another $3–5M on top.
       </div>
     </div>
   </div>
@@ -369,7 +380,8 @@
           <li><span class="num green">4</span><span>Billing &amp; RCM optimization could recover <strong>200–400 bps of margin</strong></span></li>
           <li><span class="num green">5</span><span>AI-driven clinical documentation + scheduling can reduce labor costs <strong>8–12%</strong></span></li>
           <li><span class="num green">6</span><span>Platform for Gulf Coast roll-up: acquire 2–3 facilities with shared G&amp;A synergies</span></li>
-          <li><span class="num green">7</span><span>Behavioral health M&amp;A multiples remain strong at <strong>10–14× EBITDA</strong> for scaled platforms</span></li>
+          <li><span class="num green">7</span><span>Behavioral health M&amp;A multiples strong at <strong>10–14× EBITDA</strong> for scaled commercial-mix platforms; current Medicaid-heavy profile = entry discount, exit premium if mix diversified</span></li>
+          <li><span class="num green">8</span><span>Payer mix diversification from 91% Medicaid → 70% Medicaid creates <strong>$3–6M equity value uplift</strong> from multiple expansion alone — independent of EBITDA growth</span></li>
         </ul>
       </div>
     </div>
@@ -377,13 +389,13 @@
       <div class="section-header red">Key Risks</div>
       <div class="section-body">
         <ul class="thesis-list">
-          <li><span class="num" style="background:var(--red)">1</span><span>Negative book equity (−$703K) with $5.6M total debt — heavily leveraged balance sheet</span></li>
-          <li><span class="num" style="background:var(--red)">2</span><span>Regulatory risk: behavioral health licensing, Medicaid reimbursement rate changes</span></li>
-          <li><span class="num" style="background:var(--red)">3</span><span>Key-man risk: owner-operators with guaranteed payments embedded in cost structure</span></li>
-          <li><span class="num" style="background:var(--red)">4</span><span>Concentration risk: single facility in Baton Rouge, LA — no geographic diversification</span></li>
-          <li><span class="num" style="background:var(--red)">5</span><span>Labor market tightness for LPNs and clinical staff in Louisiana</span></li>
-          <li><span class="num" style="background:var(--red)">6</span><span>Q4 2025 revenue softness ($1.31M vs $1.39M Q3) — seasonal pattern or structural issue?</span></li>
-          <li><span class="num" style="background:var(--red)">7</span><span><strong>A/R aging concentration:</strong> $264K in 90+ days (46.9% of $563K total A/R) · $215K over 120 days carries 40–60% write-off risk · Estimated exposure: $85K–$130K — requires pre-close remediation or purchase price adjustment</span></li>
+          <li><span class="num" style="background:var(--red)">1</span><span><strong>🚨 EXISTENTIAL: 91% Medicaid payer mix + 1115 waiver expires Dec 31, 2027</strong> — without the IMD exclusion waiver, Medicaid cannot pay for residential stays in a 112-bed IMD. 91% revenue at risk if not renewed. Waiver renewal required before any 5-year hold makes sense.</span></li>
+          <li><span class="num" style="background:var(--red)">2</span><span><strong>ASAM 4th Edition rate transition (Jan 2026)</strong> — Louisiana updating Specialized Behavioral Health fee schedule NOW. 91% of revenue flows through this fee schedule. Rate changes could impact every service line simultaneously.</span></li>
+          <li><span class="num" style="background:var(--red)">3</span><span>Negative book equity (−$703K) with $5.6M total debt — heavily leveraged balance sheet</span></li>
+          <li><span class="num" style="background:var(--red)">4</span><span>Key-man risk: owner-operators with guaranteed payments embedded in cost structure</span></li>
+          <li><span class="num" style="background:var(--red)">5</span><span>Concentration risk: single facility in Baton Rouge, LA — no geographic diversification</span></li>
+          <li><span class="num" style="background:var(--red)">6</span><span>Labor market tightness for LPNs and clinical staff in Louisiana</span></li>
+          <li><span class="num" style="background:var(--red)">7</span><span><strong>A/R aging:</strong> $264K in 90+ days — $215K 120+ days is predominantly Medicaid denials (ASAM auth issues, billing codes) · $85K–$130K write-off exposure · Requires pre-close rework or price adjustment</span></li>
         </ul>
       </div>
     </div>
@@ -695,6 +707,113 @@
       </div>
     </div></div></details>
 
+  <!-- 1115 WAIVER ANALYSIS -->
+  <div class="section">
+    <div class="section-header red">Section 1115 Waiver Analysis — The Revenue Foundation of This Business</div>
+    <div class="section-body">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px">
+        <div style="background:#fff5f5;border:1px solid #fca5a5;border-radius:6px;padding:16px;text-align:center">
+          <div style="font-size:0.7rem;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Revenue at Risk</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:2rem;color:var(--red)">91%</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">of total revenue is Medicaid<br>— all dependent on this waiver</div>
+        </div>
+        <div style="background:#fefce8;border:1px solid #fcd34d;border-radius:6px;padding:16px;text-align:center">
+          <div style="font-size:0.7rem;color:#92400e;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Waiver Expiry</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:2rem;color:#92400e">Dec 2027</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">~20 months from today<br>Renewal application due ~mid-2027</div>
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #86efac;border-radius:6px;padding:16px;text-align:center">
+          <div style="font-size:0.7rem;color:var(--green);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:6px">Renewal Probability</div>
+          <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:2rem;color:var(--green)">High</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">Bipartisan support · Trump 1.0<br>expanded IMD waivers nationally</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+        <div>
+          <div style="font-weight:700;color:var(--navy);font-size:0.88rem;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--light)">What the Waiver Does</div>
+          <div style="font-size:0.82rem;color:var(--muted);line-height:1.8">
+            Federal Medicaid law contains the <strong style="color:var(--text)">IMD Exclusion</strong> — a rule that prohibits Medicaid from paying for services provided to patients aged 21–64 in any facility with <strong>more than 16 beds</strong> primarily engaged in SUD or mental health treatment.<br><br>
+            Stoa has <strong>112 licensed beds</strong>. Without the waiver, Medicaid pays <strong style="color:var(--red)">$0</strong> for any residential or detox patient stay. The 91% Medicaid payer mix would collapse to near zero billable revenue on the residential census.<br><br>
+            Louisiana's <strong>Healthy Louisiana OUD/SUD 1115 Demonstration Waiver</strong> waives the IMD exclusion, allowing CMS to reimburse Louisiana Medicaid for SUD treatment services — including residential (3.5) and detox (3.7) — in facilities like Stoa. This waiver is the legal and financial permission slip for the entire business model.
+          </div>
+        </div>
+
+        <div>
+          <div style="font-weight:700;color:var(--navy);font-size:0.88rem;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--light)">Waiver History &amp; Status</div>
+          <div style="font-size:0.82rem;color:var(--muted);line-height:1.8">
+            <div style="display:flex;gap:10px;margin-bottom:8px"><span style="color:var(--green);font-weight:700;flex-shrink:0">2018</span><span>Originally approved — effective Feb 1, 2018. Louisiana became one of the first states with a full SUD/IMD waiver.</span></div>
+            <div style="display:flex;gap:10px;margin-bottom:8px"><span style="color:var(--green);font-weight:700;flex-shrink:0">2022</span><span>Extended Dec 2, 2022 by CMS. 5-year renewal through Dec 31, 2027. Active with no adverse findings.</span></div>
+            <div style="display:flex;gap:10px;margin-bottom:8px"><span style="color:var(--gold);font-weight:700;flex-shrink:0">2025</span><span>Annual public forum held Oct 15, 2025. LDH confirmed ongoing operation, milestone compliance, and 2025 activities.</span></div>
+            <div style="display:flex;gap:10px;margin-bottom:8px"><span style="color:var(--gold);font-weight:700;flex-shrink:0">2026</span><span>ASAM 4th Edition fee schedule update effective Jan 1, 2026. New billing codes and rates for 18+ patients. Impacts 91% of Stoa's revenue.</span></div>
+            <div style="display:flex;gap:10px"><span style="color:var(--red);font-weight:700;flex-shrink:0">2027</span><span>Waiver expires Dec 31. Louisiana must submit renewal application. CMS review typically takes 6–18 months.</span></div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-weight:700;color:var(--navy);font-size:0.88rem;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--light)">Renewal Risk Assessment</div>
+          <div style="font-size:0.82rem;color:var(--muted);line-height:1.8">
+            <strong style="color:var(--green)">Why renewal is likely (HIGH probability):</strong>
+            <ul style="margin:6px 0 10px 16px">
+              <li style="margin-bottom:4px">SUD/IMD waivers were a <em>priority</em> of the first Trump administration — he expanded them. Current Trump CMS has been rolling back other waiver types (continuous enrollment, HRSN) but has NOT targeted SUD waivers.</li>
+              <li style="margin-bottom:4px">The opioid crisis is bipartisan. Louisiana has deep Republican support for treatment-based approaches (vs. purely criminal justice).</li>
+              <li style="margin-bottom:4px">Louisiana already ran this waiver for 9+ years with clean compliance reports. CMS renewal applications for functioning waivers are rarely denied.</li>
+              <li>LDH active engagement: October 2025 forum confirms ongoing reporting and milestone compliance — no findings that would threaten renewal.</li>
+            </ul>
+            <strong style="color:var(--red)">Residual risks:</strong>
+            <ul style="margin:6px 0 0 16px">
+              <li style="margin-bottom:4px">Federal Medicaid block grant legislation (proposed in 2025 reconciliation bills) could change the entire funding structure — not waiver-specific, but would affect all Medicaid-dependent providers.</li>
+              <li>If LDH submits renewal application late or with compliance deficiencies, there could be a gap in waiver coverage. Stoa should confirm LDH's renewal timeline directly.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-weight:700;color:var(--navy);font-size:0.88rem;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--light)">STC Compliance Requirements (Stoa's Obligations)</div>
+          <div style="font-size:0.82rem;color:var(--muted);line-height:1.8">
+            To maintain waiver eligibility, Stoa must remain in good standing with Louisiana's SUD waiver Special Terms and Conditions (STCs):
+            <ul style="margin:8px 0 0 16px">
+              <li style="margin-bottom:4px"><strong style="color:var(--text)">Medicaid Managed Care contracts:</strong> Must be credentialed with all 5 Healthy Louisiana MCOs (Aetna Better Health, AmeriHealth Caritas, Humana, UnitedHealthcare Community Plan, BCBS LA). Any lapse = denied claims.</li>
+              <li style="margin-bottom:4px"><strong style="color:var(--text)">ASAM level of care criteria:</strong> Must use ASAM criteria to justify each admission level. Detox (3.7) requires documented medical withdrawal necessity. Residential (3.5) requires LOCUS/ASAM criteria. Missing documentation = automatic denial.</li>
+              <li style="margin-bottom:4px"><strong style="color:var(--text)">Prior authorization:</strong> Each admission requires prior auth from the patient's MCO before day 1. Failure to obtain auth = uncovered stay. This is likely the primary cause of the $215K 120+ day A/R.</li>
+              <li style="margin-bottom:4px"><strong style="color:var(--text)">Discharge planning:</strong> Waiver requires documented step-down planning. Connects directly to the alumni/IOP revenue opportunity.</li>
+              <li><strong style="color:var(--text)">Quality metrics:</strong> LDH requires quarterly reporting on readmission rates, LOI, completion rates. These must stay within approved ranges.</li>
+            </ul>
+            <div style="margin-top:10px;padding:8px;background:#fef3c7;border-radius:4px;font-size:0.78rem"><strong>PE diligence item:</strong> Request Stoa's MCO credentialing status for all 5 Healthy Louisiana plans + last 3 prior auth denial rates by service line. This tells you the billing engine's true health.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:20px;background:var(--navy);color:white;border-radius:6px;padding:20px">
+        <div style="font-weight:700;font-size:0.9rem;margin-bottom:12px;letter-spacing:0.06em">WAIVER-INFORMED STRATEGY: HOW 91% MEDICAID CHANGES THE PE PLAYBOOK</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+          <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:14px">
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Acquisition Timing</div>
+            <div style="font-size:0.85rem;font-weight:600;margin-bottom:6px">Close before mid-2026</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6)">Get 18+ months of current waiver certainty. Include waiver renewal as a closing condition or price adjustment covenant in the LOI.</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:14px">
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Value Creation Priority #1</div>
+            <div style="font-size:0.85rem;font-weight:600;margin-bottom:6px">Diversify to 25% commercial</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6)">Going from 9% commercial → 25% commercial shifts the exit multiple from 7× → 9-10×. That's +$7.8M equity on the same EBITDA. No other single action creates this much value.</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.1);border-radius:4px;padding:14px">
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Roll-Up Geography</div>
+            <div style="font-size:0.85rem;font-weight:600;margin-bottom:6px">Waiver-only states</div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6)">Louisiana ✓ · Mississippi ✓ · Alabama ✓ · Arkansas ✓ — Texas ✗ (no IMD waiver). Roll-up confined to waiver states maintains consistent revenue model.</div>
+          </div>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:rgba(255,255,255,0.08);border-radius:4px;font-size:0.82rem">
+          <strong>The 91% Medicaid Reframe:</strong> This isn't a bug — it's the buy thesis. Medicaid-heavy assets trade at a discount (7×) precisely <em>because</em> most buyers don't want the government payer complexity. A PE firm with healthcare policy expertise and MCO relationships can acquire at 7×, execute the commercial diversification playbook, and exit to a strategic buyer at 10-11×. The complexity is the moat.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ROLL-UP MODEL -->
   <div class="section">
     <div class="section-header">5-Year Regional Roll-Up Model</div>
@@ -731,11 +850,13 @@
           <div class="phase-label">Days 1–30</div>
           <h4>Stabilize &amp; Assess</h4>
           <ul>
+            <li>Confirm MCO credentialing (all 5 Healthy LA plans)</li>
+            <li>Pull prior auth denial rate by service line</li>
             <li>Install financial KPI dashboards</li>
-            <li>Operational deep dive all depts</li>
+            <li>Audit billing &amp; 90+ day A/R denials</li>
             <li>Begin AI vendor selection (docs + RCM)</li>
-            <li>Audit billing &amp; denials pipeline</li>
-            <li>Recruit VP Operations</li>
+            <li>Recruit VP Operations + Dir. of Business Dev</li>
+            <li>Engage healthcare counsel on 2027 waiver renewal timeline</li>
           </ul>
         </div>
         <div class="plan-phase">
@@ -782,24 +903,24 @@
       <div class="three-col">
         <div>
           <div class="stat-pair">
-            <div class="stat-item"><div class="sv">7–8×</div><div class="sl">Entry Multiple (EBITDA)</div></div>
-            <div class="stat-item"><div class="sv">$18–21M</div><div class="sl">Entry Enterprise Value</div></div>
+            <div class="stat-item"><div class="sv">6–7×</div><div class="sl">Entry Multiple (EBITDA)</div></div>
+            <div class="stat-item"><div class="sv">$15–18M</div><div class="sl">Entry Enterprise Value</div></div>
           </div>
-          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Required Equity: ~$3.6M–$4.2M<br>Structure: 60% Sr Debt / 20% Mezz / 20% Eq</div>
+          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Medicaid discount applied<br>Required equity: ~$3.0M–$3.6M<br>Structure: 60% Sr Debt / 20% Mezz / 20% Eq</div>
         </div>
         <div>
           <div class="stat-pair">
-            <div class="stat-item"><div class="sv">10–12×</div><div class="sl">Exit Multiple (Year 5)</div></div>
-            <div class="stat-item"><div class="sv">$89–107M</div><div class="sl">Exit Enterprise Value</div></div>
+            <div class="stat-item"><div class="sv">10–11×</div><div class="sl">Exit Multiple (Year 5)</div></div>
+            <div class="stat-item"><div class="sv">$89–107M</div><div class="sl">Exit Enterprise Value (platform)</div></div>
           </div>
-          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Exit EBITDA: $8.9M<br>3-facility Gulf Coast platform</div>
+          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Exit assumes: waiver renewed + 25%+ commercial mix + 3-facility platform<br>Exit EBITDA: $8.9M</div>
         </div>
         <div>
           <div class="stat-pair">
-            <div class="stat-item"><div class="sv" style="color:var(--green)">2.5–3.1×</div><div class="sl">Gross MOIC</div></div>
-            <div class="stat-item"><div class="sv" style="color:var(--green)">25–35%</div><div class="sl">Target IRR</div></div>
+            <div class="stat-item"><div class="sv" style="color:var(--green)">2.8–3.5×</div><div class="sl">Gross MOIC</div></div>
+            <div class="stat-item"><div class="sv" style="color:var(--green)">28–38%</div><div class="sl">Target IRR</div></div>
           </div>
-          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Management rollover: 15–20% equity<br>Hold period: ~5 years</div>
+          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Higher IRR vs. prior model because entry multiple compressed by Medicaid discount<br>Management rollover: 15–20% equity · Hold: ~5 years</div>
         </div>
       </div>
     </div>
