@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stoa Behavioral Healthcare — PE Summary</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --navy:#1F3864;--navy2:#2E75B6;--navy3:#4472C4;
+    --light:#D6E4F0;--white:#FFFFFF;--bg:#F4F7FB;
+    --green:#548235;--red:#C00000;--gold:#BF8F00;--orange:#ED7D31;
+    --text:#1a1a2e;--muted:#6b7280;
+  }
+  body{font-family:"Inter",sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+  a{color:var(--navy2);text-decoration:none}
+
+  /* HEADER */
+  .header{background:linear-gradient(135deg,var(--navy) 0%,#243e7a 60%,var(--navy2) 100%);color:white;padding:48px 48px 36px}
+  .header-top{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px}
+  .badge{display:inline-block;padding:6px 18px;background:var(--green);color:white;font-weight:700;font-size:0.8rem;letter-spacing:0.12em;border-radius:2px}
+  .badge.red{background:var(--red)}
+  .company-name{font-family:"Montserrat",sans-serif;font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:-0.01em;margin:12px 0 6px}
+  .company-sub{font-size:0.9rem;color:rgba(255,255,255,0.65);letter-spacing:0.05em}
+  .header-meta{font-size:0.78rem;color:rgba(255,255,255,0.5);margin-top:24px}
+
+  /* METRICS STRIP */
+  .metrics{display:flex;flex-wrap:wrap;gap:0;background:white;border-bottom:3px solid var(--light)}
+  .metric{flex:1;min-width:140px;padding:22px 24px;border-right:1px solid var(--light);text-align:center}
+  .metric:last-child{border-right:none}
+  .metric .val{font-family:"Montserrat",sans-serif;font-weight:900;font-size:1.7rem;color:var(--navy)}
+  .metric .lbl{font-size:0.72rem;color:var(--muted);margin-top:4px;letter-spacing:0.06em;text-transform:uppercase}
+  .metric .chg{font-size:0.75rem;font-weight:600;margin-top:4px}
+  .chg.up{color:var(--green)} .chg.dn{color:var(--red)}
+
+  /* LAYOUT */
+  .container{max-width:1200px;margin:0 auto;padding:36px 24px}
+  .section{background:white;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,0.06);margin-bottom:24px;overflow:hidden}
+  .section-header{background:var(--navy);color:white;padding:14px 24px;font-weight:700;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase}
+  .section-header.blue{background:var(--navy2)}
+  .section-header.green{background:var(--green)}
+  .section-header.gold{background:var(--gold)}
+  .section-header.red{background:var(--red)}
+  .section-body{padding:24px}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
+
+  /* FINANCIAL TABLE */
+  .fin-table{width:100%;border-collapse:collapse}
+  .fin-table th{background:var(--light);color:var(--navy);font-weight:700;font-size:0.78rem;padding:10px 14px;text-align:right;letter-spacing:0.04em}
+  .fin-table th:first-child{text-align:left}
+  .fin-table td{padding:9px 14px;border-bottom:1px solid #eef2f7;font-size:0.85rem;text-align:right}
+  .fin-table td:first-child{text-align:left;font-weight:500;color:var(--text)}
+  .fin-table tr.section-row td{background:#f8fafc;font-weight:700;color:var(--navy);font-size:0.8rem;letter-spacing:0.06em;text-transform:uppercase}
+  .fin-table tr.total-row td{background:var(--navy);color:white;font-weight:700}
+  .fin-table tr:hover td{background:#f0f6ff}
+  .up{color:var(--green)} .dn{color:var(--red)}
+
+  /* VALUATION SCENARIOS */
+  .scenario-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .scenario-card{border-radius:6px;padding:20px;text-align:center;border:2px solid transparent}
+  .scenario-card.bear{background:#fff5f5;border-color:#fca5a5}
+  .scenario-card.base{background:#eff6ff;border-color:var(--navy3)}
+  .scenario-card.bull{background:#f0fdf4;border-color:#86efac}
+  .scenario-card.upside{background:#fefce8;border-color:#fcd34d}
+  .scenario-card .sc-label{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px}
+  .scenario-card.bear .sc-label{color:var(--red)}
+  .scenario-card.base .sc-label{color:var(--navy2)}
+  .scenario-card.bull .sc-label{color:var(--green)}
+  .scenario-card.upside .sc-label{color:var(--gold)}
+  .scenario-card .sc-mult{font-size:1.1rem;font-weight:700;color:var(--muted);margin-bottom:4px}
+  .scenario-card .sc-ev{font-family:"Montserrat",sans-serif;font-weight:900;font-size:1.5rem;color:var(--navy)}
+  .scenario-card .sc-eq{font-size:0.8rem;margin-top:6px;color:var(--muted)}
+  .scenario-card .sc-eq span{font-weight:700;font-size:0.95rem}
+  .scenario-card.base .sc-ev,.scenario-card.base .sc-eq span{color:var(--navy2)}
+  .scenario-card.bull .sc-ev,.scenario-card.bull .sc-eq span{color:var(--green)}
+  .scenario-card.upside .sc-ev,.scenario-card.upside .sc-eq span{color:var(--gold)}
+  .scenario-card.bear .sc-eq span{color:var(--red)}
+
+  /* EV RANGE BAR */
+  .ev-bar-wrap{margin:20px 0;position:relative}
+  .ev-bar-track{height:12px;background:#e5e7eb;border-radius:6px;position:relative;overflow:hidden}
+  .ev-bar-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,#fca5a5 0%,var(--navy3) 40%,var(--green) 70%,#fcd34d 100%)}
+  .ev-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:0.72rem;color:var(--muted)}
+
+  /* THESIS / RISKS */
+  .thesis-list{list-style:none;padding:0}
+  .thesis-list li{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #eef2f7;font-size:0.88rem}
+  .thesis-list li:last-child{border-bottom:none}
+  .thesis-list li .num{background:var(--navy);color:white;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:0.72rem;font-weight:700;flex-shrink:0;margin-top:1px}
+  .thesis-list li.risk .num{background:var(--red)}
+  .thesis-list li .num.green{background:var(--green)}
+
+  /* SAVINGS TABLE */
+  .savings-table{width:100%;border-collapse:collapse}
+  .savings-table th{background:var(--navy);color:white;font-size:0.75rem;padding:10px 12px;text-align:left;font-weight:600;letter-spacing:0.06em}
+  .savings-table td{padding:9px 12px;border-bottom:1px solid #eef2f7;font-size:0.83rem}
+  .savings-table tr:nth-child(even) td{background:#f8fafc}
+  .savings-table td.savings{font-weight:700;color:var(--green)}
+  .savings-table td.cost{font-weight:700;color:var(--navy2)}
+  .savings-table td.impact{font-weight:700;color:var(--gold)}
+  .savings-table tfoot td{background:var(--navy);color:white;font-weight:700;padding:10px 12px}
+  .savings-table tfoot td.savings{color:#86efac}
+
+  /* AI SECTION */
+  .ai-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .ai-card{background:#f8fafc;border-radius:6px;padding:16px;border-left:3px solid var(--navy2)}
+  .ai-card .ai-name{font-weight:600;font-size:0.83rem;color:var(--navy);margin-bottom:6px}
+  .ai-card .ai-savings{font-family:"Montserrat",sans-serif;font-weight:900;font-size:1.3rem;color:var(--green)}
+  .ai-card .ai-cost{font-size:0.75rem;color:var(--muted);margin-top:2px}
+  .ai-card .ai-roi{font-size:0.75rem;font-weight:600;color:var(--navy2);margin-top:4px}
+
+  /* ROLLUP */
+  .rollup-table{width:100%;border-collapse:collapse}
+  .rollup-table th{background:var(--navy);color:white;font-size:0.78rem;padding:10px 14px;text-align:right;font-weight:600}
+  .rollup-table th:first-child{text-align:left}
+  .rollup-table td{padding:9px 14px;text-align:right;border-bottom:1px solid #eef2f7;font-size:0.85rem}
+  .rollup-table td:first-child{text-align:left;font-weight:500}
+  .rollup-table tr.highlight td{background:#eff6ff;font-weight:700;color:var(--navy2)}
+
+  /* 100-DAY PLAN */
+  .plan-phases{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--light);border-radius:6px;overflow:hidden}
+  .plan-phase{padding:20px;border-right:1px solid var(--light)}
+  .plan-phase:last-child{border-right:none}
+  .plan-phase .phase-label{font-size:0.7rem;font-weight:700;letter-spacing:0.12em;color:var(--navy2);text-transform:uppercase;margin-bottom:8px}
+  .plan-phase h4{font-size:0.9rem;color:var(--navy);margin-bottom:10px}
+  .plan-phase ul{list-style:none;padding:0}
+  .plan-phase ul li{font-size:0.78rem;color:var(--muted);padding:3px 0;padding-left:12px;position:relative}
+  .plan-phase ul li::before{content:"→";position:absolute;left:0;color:var(--navy2)}
+
+  /* DOWNLOAD BUTTON */
+  .dl-wrap{text-align:center;padding:32px}
+  .dl-btn{display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:white;padding:14px 32px;border-radius:4px;font-weight:700;font-size:0.9rem;letter-spacing:0.08em;cursor:pointer;border:none;font-family:"Inter",sans-serif;text-transform:uppercase;transition:background 0.2s}
+  .dl-btn:hover{background:var(--navy2)}
+  .dl-btn .icon{font-size:1.2rem}
+
+  /* FOOTER */
+  .footer{background:var(--navy);color:rgba(255,255,255,0.4);text-align:center;padding:20px;font-size:0.75rem;margin-top:48px}
+
+  /* STAT PAIR */
+  .stat-pair{display:flex;gap:24px;flex-wrap:wrap}
+  .stat-item{flex:1;min-width:120px}
+  .stat-item .sv{font-family:"Montserrat",sans-serif;font-weight:900;font-size:1.5rem;color:var(--navy)}
+  .stat-item .sl{font-size:0.72rem;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;margin-top:2px}
+
+  @media(max-width:768px){
+    .metrics{flex-direction:column}
+    .two-col,.three-col,.scenario-grid,.ai-grid,.plan-phases{grid-template-columns:1fr}
+    .header{padding:32px 20px 24px}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div>
+      <div class="badge">BUY RECOMMENDATION</div>
+      <div class="company-name">Stoa Behavioral Healthcare</div>
+      <div class="company-sub">Baton Rouge, Louisiana · 112-Bed Behavioral Health &amp; Substance Abuse Platform</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:0.75rem;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase">Ownership</div>
+      <div style="font-size:1rem;color:white;font-weight:600;margin-top:4px">JC Glancy &amp; Nick Starobin<br><span style="font-size:0.85rem;color:rgba(255,255,255,0.6)">50 / 50</span></div>
+      <div style="margin-top:12px;font-size:0.75rem;color:rgba(255,255,255,0.5)">Service Lines</div>
+      <div style="font-size:0.82rem;color:rgba(255,255,255,0.8);margin-top:2px">Halfway House (3.1) · Residential (3.5)<br>Detox (3.7) · IOP · PHP</div>
+    </div>
+  </div>
+  <div class="header-meta">Confidential Investment Memorandum · April 2026 · 57 FTEs · ~69 patients/day avg census</div>
+</div>
+
+<!-- METRICS STRIP -->
+<div class="metrics">
+  <div class="metric">
+    <div class="val">$7.3M</div>
+    <div class="lbl">FY26E Revenue</div>
+    <div class="chg up">▲ 41% YoY</div>
+  </div>
+  <div class="metric">
+    <div class="val">$2.6M</div>
+    <div class="lbl">FY26E Adj. EBITDA</div>
+    <div class="chg up">▲ 124% YoY</div>
+  </div>
+  <div class="metric">
+    <div class="val">35.7%</div>
+    <div class="lbl">EBITDA Margin</div>
+    <div class="chg up">▲ from 22.5%</div>
+  </div>
+  <div class="metric">
+    <div class="val">62%</div>
+    <div class="lbl">Occupancy Rate</div>
+    <div class="chg" style="color:var(--gold)">Target: 80–85%</div>
+  </div>
+  <div class="metric">
+    <div class="val">$969K</div>
+    <div class="lbl">FCF After Draws</div>
+    <div class="chg up">Per owner ~$485K</div>
+  </div>
+  <div class="metric">
+    <div class="val">2.1x</div>
+    <div class="lbl">Net Debt / EBITDA</div>
+    <div class="chg" style="color:var(--gold)">Manageable leverage</div>
+  </div>
+  <div class="metric">
+    <div class="val">112</div>
+    <div class="lbl">Licensed Beds</div>
+    <div class="chg" style="color:var(--muted)">~38 beds unused</div>
+  </div>
+  <div class="metric">
+    <div class="val">$5.5M</div>
+    <div class="lbl">Total Debt</div>
+    <div class="chg dn">Negative equity position</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- FINANCIAL HIGHLIGHTS -->
+  <div class="section">
+    <div class="section-header">Financial Performance: FY2025 Actual vs FY2026 Projected</div>
+    <div class="section-body" style="padding:0">
+      <table class="fin-table">
+        <thead>
+          <tr><th>Metric</th><th>FY2025 Actual</th><th>FY2026E</th><th>$ Change</th><th>% Change</th><th>Commentary</th></tr>
+        </thead>
+        <tbody>
+          <tr class="section-row"><td colspan="6">Revenue</td></tr>
+          <tr><td>3.1 Halfway House</td><td>$1,581,013</td><td>$1,632,884</td><td class="up">+$51,871</td><td class="up">+3.3%</td><td style="color:var(--muted);font-size:0.78rem">Stable base revenue stream</td></tr>
+          <tr><td>3.5 Residential</td><td>$3,220,270</td><td>$3,826,665</td><td class="up">+$606,395</td><td class="up">+18.8%</td><td style="color:var(--muted);font-size:0.78rem">Occupancy + rate improvement</td></tr>
+          <tr><td>3.7 Detox (NEW)</td><td>—</td><td style="color:var(--green);font-weight:700">$1,164,198</td><td class="up">+$1,164,198</td><td>N/A</td><td style="color:var(--muted);font-size:0.78rem">New service line FY2026</td></tr>
+          <tr><td>IOP + PHP</td><td>$305,320</td><td>$602,250</td><td class="up">+$296,930</td><td class="up">+97%</td><td style="color:var(--muted);font-size:0.78rem">Outpatient expansion</td></tr>
+          <tr class="total-row"><td>Total Revenue</td><td>$5,152,754</td><td>$7,262,058</td><td>+$2,109,304</td><td>+40.9%</td><td></td></tr>
+          <tr class="section-row"><td colspan="6">Profitability</td></tr>
+          <tr><td>Gross Profit</td><td>$3,312,533</td><td>$4,929,188</td><td class="up">+$1,616,656</td><td class="up">+48.8%</td><td style="color:var(--muted);font-size:0.78rem">Gross margin: 64.3% → 67.9%</td></tr>
+          <tr><td>Total OpEx</td><td>$2,345,964</td><td>$2,504,097</td><td class="dn">+$158,133</td><td>+6.7%</td><td style="color:var(--muted);font-size:0.78rem">OpEx as % rev: 45.5% → 34.5%</td></tr>
+          <tr><td>Net Operating Income</td><td>$966,569</td><td>$2,425,091</td><td class="up">+$1,458,522</td><td class="up">+150.9%</td><td style="color:var(--muted);font-size:0.78rem">NOI margin: 18.8% → 33.4%</td></tr>
+          <tr class="total-row"><td>Adj. EBITDA (+ rent add-back)</td><td>$1,159,135</td><td>$2,594,361</td><td>+$1,435,226</td><td>+123.8%</td><td>EBITDA margin: 22.5% → 35.7%</td></tr>
+          <tr><td>FCF Available for Distribution</td><td>—</td><td style="color:var(--green);font-weight:700">$1,937,483</td><td>—</td><td>—</td><td style="color:var(--muted);font-size:0.78rem">After debt service + guaranteed pmts</td></tr>
+          <tr><td>FCF After Owner Draws</td><td>—</td><td style="color:var(--green);font-weight:700">$968,742</td><td>—</td><td>—</td><td style="color:var(--muted);font-size:0.78rem">~$485K per owner</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- VALUATION SCENARIOS -->
+  <div class="section">
+    <div class="section-header blue">Valuation Analysis · Basis: FY2026E Adj. EBITDA $2,594,361 · Net Debt: $5,532,078</div>
+    <div class="section-body">
+      <div class="scenario-grid">
+        <div class="scenario-card bear">
+          <div class="sc-label">Bear Case</div>
+          <div class="sc-mult">7.0× EBITDA</div>
+          <div class="sc-ev">$18.2M</div>
+          <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
+          <div class="sc-eq">Equity Value: <span>$12.6M</span></div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Single-site discount</div>
+        </div>
+        <div class="scenario-card base">
+          <div class="sc-label">Base Case</div>
+          <div class="sc-mult">9.0× EBITDA</div>
+          <div class="sc-ev">$23.3M</div>
+          <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
+          <div class="sc-eq">Equity Value: <span>$17.8M</span></div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Fair market value</div>
+        </div>
+        <div class="scenario-card bull">
+          <div class="sc-label">Bull Case</div>
+          <div class="sc-mult">11.0× EBITDA</div>
+          <div class="sc-ev">$28.5M</div>
+          <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
+          <div class="sc-eq">Equity Value: <span>$23.0M</span></div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Growth premium</div>
+        </div>
+        <div class="scenario-card upside">
+          <div class="sc-label">Upside</div>
+          <div class="sc-mult">13.0× EBITDA</div>
+          <div class="sc-ev">$33.7M</div>
+          <div class="sc-label" style="font-size:0.68rem;margin-top:2px">Enterprise Value</div>
+          <div class="sc-eq">Equity Value: <span>$28.2M</span></div>
+          <div style="font-size:0.72rem;color:var(--muted);margin-top:6px">Post roll-up platform</div>
+        </div>
+      </div>
+      <div class="ev-bar-wrap" style="margin-top:24px">
+        <div style="font-size:0.78rem;color:var(--muted);margin-bottom:8px;font-weight:600">Enterprise Value Range: $18.2M — $33.7M</div>
+        <div class="ev-bar-track"><div class="ev-bar-fill" style="width:100%"></div></div>
+        <div class="ev-labels"><span>$18.2M Bear</span><span>$23.3M Base</span><span>$28.5M Bull</span><span>$33.7M Upside</span></div>
+      </div>
+      <div style="margin-top:20px;background:#f8fafc;border-radius:4px;padding:16px;font-size:0.82rem;color:var(--muted)">
+        <strong style="color:var(--navy)">Revenue Multiple Cross-Check:</strong>&nbsp; 1.0× Rev = $7.3M EV &nbsp;|&nbsp; 1.5× = $10.9M &nbsp;|&nbsp; 2.0× = $14.5M &nbsp;|&nbsp; 2.5× = $18.2M &nbsp;—&nbsp; Revenue multiples suggest floor around 1.5–2.0×; EBITDA multiples are the better valuation anchor given strong cash generation.
+      </div>
+    </div>
+  </div>
+
+  <!-- THESIS & RISKS -->
+  <div class="two-col">
+    <div class="section">
+      <div class="section-header green">Investment Thesis</div>
+      <div class="section-body">
+        <ul class="thesis-list">
+          <li><span class="num green">1</span><span>High-growth behavioral health platform in underserved Louisiana market with strong and improving unit economics</span></li>
+          <li><span class="num green">2</span><span>Detox (3.7) launch adds <strong>$1.16M new revenue</strong> using existing infrastructure — zero capex growth</span></li>
+          <li><span class="num green">3</span><span>62% occupancy = significant organic runway to 85%+ without additional investment</span></li>
+          <li><span class="num green">4</span><span>Billing &amp; RCM optimization could recover <strong>200–400 bps of margin</strong></span></li>
+          <li><span class="num green">5</span><span>AI-driven clinical documentation + scheduling can reduce labor costs <strong>8–12%</strong></span></li>
+          <li><span class="num green">6</span><span>Platform for Gulf Coast roll-up: acquire 2–3 facilities with shared G&amp;A synergies</span></li>
+          <li><span class="num green">7</span><span>Behavioral health M&amp;A multiples remain strong at <strong>10–14× EBITDA</strong> for scaled platforms</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-header red">Key Risks</div>
+      <div class="section-body">
+        <ul class="thesis-list">
+          <li><span class="num" style="background:var(--red)">1</span><span>Negative book equity (−$703K) with $5.6M total debt — heavily leveraged balance sheet</span></li>
+          <li><span class="num" style="background:var(--red)">2</span><span>Regulatory risk: behavioral health licensing, Medicaid reimbursement rate changes</span></li>
+          <li><span class="num" style="background:var(--red)">3</span><span>Key-man risk: owner-operators with guaranteed payments embedded in cost structure</span></li>
+          <li><span class="num" style="background:var(--red)">4</span><span>Concentration risk: single facility in Baton Rouge, LA — no geographic diversification</span></li>
+          <li><span class="num" style="background:var(--red)">5</span><span>Labor market tightness for LPNs and clinical staff in Louisiana</span></li>
+          <li><span class="num" style="background:var(--red)">6</span><span>Q4 2025 revenue softness ($1.31M vs $1.39M Q3) — seasonal pattern or structural issue?</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- COST OPTIMIZATION -->
+  <div class="section">
+    <div class="section-header gold">Cost Optimization Roadmap — $509K Annual Savings Identified</div>
+    <div class="section-body" style="padding:0">
+      <table class="savings-table">
+        <thead>
+          <tr><th>Initiative</th><th>Current Cost</th><th>Target Cost</th><th>Annual Savings</th><th>% Savings</th><th>Priority</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Billing &amp; Collection Optimization</td><td>$232,873</td><td>$145,000</td><td class="savings">$87,873</td><td>37.7%</td><td><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">HIGH</span></td></tr>
+          <tr><td>Clinical Staff Scheduling (AI)</td><td>$1,523,212</td><td>$1,370,890</td><td class="savings">$152,322</td><td>10.0%</td><td><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">HIGH</span></td></tr>
+          <tr><td>Contract Labor Reduction</td><td>$170,665</td><td>$100,000</td><td class="savings">$70,665</td><td>41.4%</td><td><span style="background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">HIGH</span></td></tr>
+          <tr><td>Legal &amp; Professional Fees</td><td>$235,045</td><td>$180,000</td><td class="savings">$55,045</td><td>23.4%</td><td><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">MED</span></td></tr>
+          <tr><td>Food &amp; Beverage Procurement (GPO)</td><td>$221,602</td><td>$185,000</td><td class="savings">$36,602</td><td>16.5%</td><td><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">MED</span></td></tr>
+          <tr><td>Insurance Renegotiation</td><td>$140,255</td><td>$110,000</td><td class="savings">$30,255</td><td>21.6%</td><td><span style="background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">MED</span></td></tr>
+          <tr><td>Utilities (IoT + Energy Mgmt)</td><td>$112,272</td><td>$90,000</td><td class="savings">$22,273</td><td>19.8%</td><td><span style="background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">LOW</span></td></tr>
+          <tr><td>Supply Chain (GPO)</td><td>$111,267</td><td>$90,000</td><td class="savings">$21,267</td><td>19.1%</td><td><span style="background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">LOW</span></td></tr>
+          <tr><td>Software Consolidation</td><td>$64,826</td><td>$50,000</td><td class="savings">$14,826</td><td>22.9%</td><td><span style="background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">LOW</span></td></tr>
+          <tr><td>Travel Rationalization</td><td>$43,993</td><td>$25,000</td><td class="savings">$18,993</td><td>43.2%</td><td><span style="background:#f3f4f6;color:#374151;padding:2px 8px;border-radius:10px;font-size:0.72rem;font-weight:700">LOW</span></td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="3"><strong>TOTAL ANNUAL SAVINGS</strong></td><td class="savings">$510,121</td><td style="color:rgba(255,255,255,0.7)">9.9% of rev</td><td></td></tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- AI OPTIMIZATION -->
+  <div class="section">
+    <div class="section-header blue">AI &amp; Technology Optimization — $650K Annual Savings · $240K Investment · 4.4-Month Payback</div>
+    <div class="section-body">
+      <div class="ai-grid">
+        <div class="ai-card">
+          <div class="ai-name">Clinical Documentation AI</div>
+          <div class="ai-savings">$120K</div>
+          <div class="ai-cost">Investment: $45K</div>
+          <div class="ai-roi">ROI: 167% · Payback: 4.5 mo</div>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name">AI-Powered RCM &amp; Billing</div>
+          <div class="ai-savings">$145K</div>
+          <div class="ai-cost">Investment: $60K</div>
+          <div class="ai-roi">ROI: 142% · Payback: 5.0 mo</div>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name">AI Staff Scheduling</div>
+          <div class="ai-savings">$95K</div>
+          <div class="ai-cost">Investment: $25K</div>
+          <div class="ai-roi">ROI: 280% · Payback: 3.2 mo</div>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name">Predictive Census Mgmt</div>
+          <div class="ai-savings">$80K</div>
+          <div class="ai-cost">Investment: $30K</div>
+          <div class="ai-roi">ROI: 167% · Payback: 4.5 mo</div>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name">Compliance Automation</div>
+          <div class="ai-savings">$60K</div>
+          <div class="ai-cost">Investment: $35K</div>
+          <div class="ai-roi">ROI: 71% · Payback: 7.0 mo</div>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name">AI Marketing &amp; Referrals</div>
+          <div class="ai-savings">$75K</div>
+          <div class="ai-cost">Investment: $20K</div>
+          <div class="ai-roi">ROI: 275% · Payback: 3.2 mo</div>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name">Virtual Clinical Assessments</div>
+          <div class="ai-savings">$50K</div>
+          <div class="ai-cost">Investment: $15K</div>
+          <div class="ai-roi">ROI: 233% · Payback: 3.6 mo</div>
+        </div>
+        <div class="ai-card">
+          <div class="ai-name">Smart Facility Mgmt</div>
+          <div class="ai-savings">$25K</div>
+          <div class="ai-cost">Investment: $10K</div>
+          <div class="ai-roi">ROI: 150% · Payback: 4.8 mo</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;background:#f0fdf4;border-left:3px solid var(--green);padding:14px 18px;border-radius:0 4px 4px 0">
+        <strong>Net Year 1 Benefit:</strong> $650K savings − $240K investment = <strong style="color:var(--green)">$410K net gain</strong> &nbsp;·&nbsp; Year 2+: <strong style="color:var(--green)">$650K recurring annual savings</strong> (8.9% of FY2026E revenue)
+      </div>
+    </div>
+  </div>
+
+  <!-- ROLL-UP MODEL -->
+  <div class="section">
+    <div class="section-header">5-Year Regional Roll-Up Model</div>
+    <div class="section-body" style="padding:0">
+      <table class="rollup-table">
+        <thead>
+          <tr><th>Metric</th><th>Year 1 (Current)</th><th>Year 2 (+Fac. #2)</th><th>Year 3 (+Fac. #3)</th><th>Year 4 (Optimize)</th><th>Year 5 (Exit Ready)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td># Facilities</td><td>1</td><td>2</td><td>3</td><td>3</td><td>3</td></tr>
+          <tr><td>Total Beds</td><td>112</td><td>192</td><td>302</td><td>302</td><td>302</td></tr>
+          <tr class="highlight"><td>Platform Revenue</td><td>$7.3M</td><td>$13.0M</td><td>$20.3M</td><td>$22.3M</td><td>$24.5M</td></tr>
+          <tr class="highlight"><td>Platform Adj. EBITDA</td><td>$2.6M</td><td>$4.6M</td><td>$7.0M</td><td>$8.0M</td><td>$8.9M</td></tr>
+          <tr><td>EBITDA Margin</td><td>35.7%</td><td>35.1%</td><td>34.4%</td><td>36.0%</td><td>36.4%</td></tr>
+          <tr><td>Acquisition Cost</td><td>—</td><td>$7.0M</td><td>$9.9M</td><td>—</td><td>—</td></tr>
+          <tr class="highlight"><td>Platform EV @ 10× EBITDA</td><td>$25.9M</td><td>$45.5M</td><td>$69.7M</td><td>$80.4M</td><td>$89.4M</td></tr>
+          <tr class="highlight"><td>Platform EV @ 12× EBITDA</td><td>$31.1M</td><td>$54.6M</td><td>$83.6M</td><td>$96.5M</td><td>$107.3M</td></tr>
+          <tr><td>MOIC @ 10× (on total invested)</td><td>1.4×</td><td>1.8×</td><td>2.3×</td><td>2.7×</td><td>2.9×</td></tr>
+          <tr><td>MOIC @ 12× (on total invested)</td><td>1.7×</td><td>2.2×</td><td>2.8×</td><td>3.2×</td><td>3.5×</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="section-body" style="padding:16px 24px;background:#f8fafc;font-size:0.82rem;color:var(--muted)">
+      <strong style="color:var(--navy)">Synergies included:</strong> Shared G&amp;A ($200K–$350K) · Centralized billing/RCM ($150K–$250K) · Group purchasing ($75K–$125K) · Shared technology/EHR ($40K–$75K) · Centralized marketing ($50K–$100K)
+    </div>
+  </div>
+
+  <!-- 100 DAY PLAN -->
+  <div class="section">
+    <div class="section-header green">100-Day Value Creation Plan</div>
+    <div class="section-body" style="padding:0">
+      <div class="plan-phases">
+        <div class="plan-phase">
+          <div class="phase-label">Days 1–30</div>
+          <h4>Stabilize &amp; Assess</h4>
+          <ul>
+            <li>Install financial KPI dashboards</li>
+            <li>Operational deep dive all depts</li>
+            <li>Begin AI vendor selection (docs + RCM)</li>
+            <li>Audit billing &amp; denials pipeline</li>
+            <li>Recruit VP Operations</li>
+          </ul>
+        </div>
+        <div class="plan-phase">
+          <div class="phase-label">Days 30–60</div>
+          <h4>Quick Wins</h4>
+          <ul>
+            <li>Implement billing optimization</li>
+            <li>Launch census growth initiatives</li>
+            <li>Begin contract labor reduction plan</li>
+            <li>Start Detox ramp-up marketing</li>
+            <li>Begin Facility #2 pipeline</li>
+          </ul>
+        </div>
+        <div class="plan-phase">
+          <div class="phase-label">Days 60–90</div>
+          <h4>AI Go-Live</h4>
+          <ul>
+            <li>Clinical documentation AI live</li>
+            <li>RCM automation deployed</li>
+            <li>Occupancy improvement program</li>
+            <li>Payer mix optimization begun</li>
+            <li>Staff scheduling AI piloted</li>
+          </ul>
+        </div>
+        <div class="plan-phase">
+          <div class="phase-label">Days 90–100+</div>
+          <h4>Measure &amp; Scale</h4>
+          <ul>
+            <li>KPI review vs. baseline</li>
+            <li>Refine operating model</li>
+            <li>Facility #2 LOI / diligence</li>
+            <li>Insurance renegotiation</li>
+            <li>MAT program feasibility</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RETURN SUMMARY -->
+  <div class="section">
+    <div class="section-header green">Return Profile Summary</div>
+    <div class="section-body">
+      <div class="three-col">
+        <div>
+          <div class="stat-pair">
+            <div class="stat-item"><div class="sv">7–8×</div><div class="sl">Entry Multiple (EBITDA)</div></div>
+            <div class="stat-item"><div class="sv">$18–21M</div><div class="sl">Entry Enterprise Value</div></div>
+          </div>
+          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Required Equity: ~$3.6M–$4.2M<br>Structure: 60% Sr Debt / 20% Mezz / 20% Eq</div>
+        </div>
+        <div>
+          <div class="stat-pair">
+            <div class="stat-item"><div class="sv">10–12×</div><div class="sl">Exit Multiple (Year 5)</div></div>
+            <div class="stat-item"><div class="sv">$89–107M</div><div class="sl">Exit Enterprise Value</div></div>
+          </div>
+          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Exit EBITDA: $8.9M<br>3-facility Gulf Coast platform</div>
+        </div>
+        <div>
+          <div class="stat-pair">
+            <div class="stat-item"><div class="sv" style="color:var(--green)">2.5–3.1×</div><div class="sl">Gross MOIC</div></div>
+            <div class="stat-item"><div class="sv" style="color:var(--green)">25–35%</div><div class="sl">Target IRR</div></div>
+          </div>
+          <div style="margin-top:16px;font-size:0.82rem;color:var(--muted)">Management rollover: 15–20% equity<br>Hold period: ~5 years</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DOWNLOAD BUTTON -->
+  <div class="dl-wrap">
+    <button class="dl-btn" onclick="downloadCSV()">
+      <span class="icon">⬇</span> Download Recommendations CSV
+    </button>
+    <div style="margin-top:12px;font-size:0.78rem;color:var(--muted)">All 24 recommendations with savings estimates, priority, and implementation notes</div>
+  </div>
+
+</div><!-- /container -->
+
+<div class="footer">Stoa Behavioral Healthcare · Confidential Investment Memorandum · April 2026 · Not for distribution without authorization</div>
+
+<script>
+function downloadCSV() {
+  const rows = [
+    ["Category","Initiative","Annual_Savings_USD","Investment_Required_USD","Net_Year1_Benefit_USD","Payback_Months","Priority","Timeline","Notes"],
+    ["Cost Optimization","Billing & Collection Optimization",87873,0,87873,3,"HIGH","Immediate","Renegotiate billing vendor; target 2% of rev vs 4.5%; implement denial management"],
+    ["Cost Optimization","Clinical Staff Scheduling AI",152322,25000,127322,2,"HIGH","Month 1-3","AI-driven shift scheduling; reduce OT 10%; optimize staff-to-patient ratios"],
+    ["Cost Optimization","Contract Labor Reduction",70665,0,70665,3,"HIGH","Month 1-6","Build internal float pool; reduce agency reliance; targeted recruiting"],
+    ["Cost Optimization","Legal & Professional Fees",55045,0,55045,3,"MEDIUM","Month 1-3","Retainer-based model; bring compliance in-house; reduce outside counsel"],
+    ["Cost Optimization","Food & Beverage (GPO)",36602,0,36602,2,"MEDIUM","Month 1-2","Group purchasing org; menu engineering; reduce waste 15%"],
+    ["Cost Optimization","Insurance Renegotiation",30255,0,30255,4,"MEDIUM","Month 2-4","Consolidate policies; increase deductibles; annual market shopping"],
+    ["Cost Optimization","Utilities Optimization",22273,10000,12273,5,"LOW","Month 3-6","Energy audit; LED conversion; smart HVAC; negotiate utility rates"],
+    ["Cost Optimization","Supply Chain (GPO)",21267,0,21267,2,"LOW","Month 2-4","GPO membership; par level optimization; waste reduction"],
+    ["Cost Optimization","Travel Rationalization",18993,0,18993,1,"LOW","Month 1","Virtual meetings; travel policy caps; pre-approval workflow"],
+    ["Cost Optimization","Software Consolidation",14826,0,14826,2,"LOW","Month 2-4","Audit SaaS stack; consolidate EHR + billing; eliminate redundant tools"],
+    ["AI Technology","Clinical Documentation AI",120000,45000,75000,5,"HIGH","Month 1-3","AI progress notes/treatment plans; saves 8-10 hrs/week per clinician"],
+    ["AI Technology","AI-Powered RCM & Billing",145000,60000,85000,5,"HIGH","Month 1-3","Automated claim scrubbing; denial prediction; clean claim rate 85%->95%+"],
+    ["AI Technology","AI Staff Scheduling",95000,25000,70000,3,"HIGH","Month 3-6","Demand-driven scheduling; reduces OT 15-20%; compliance automation"],
+    ["AI Technology","Predictive Census Management",80000,30000,50000,5,"HIGH","Month 3-6","ML model for admissions/discharges; improves occupancy 5-8%"],
+    ["AI Technology","Compliance & Audit Automation",60000,35000,25000,7,"MEDIUM","Month 6-9","Auto-flags documentation deficiencies; reduces audit prep from weeks to hours"],
+    ["AI Technology","AI Marketing & Referral Optimization",75000,20000,55000,3,"MEDIUM","Month 3-6","Predictive lead scoring; improves admission conversion 20-30%"],
+    ["AI Technology","Virtual Clinical Assessments",50000,15000,35000,4,"MEDIUM","Month 6-9","AI-assisted intake screening; enables after-hours admissions"],
+    ["AI Technology","Smart Facility Management",25000,10000,15000,5,"LOW","Month 9-12","IoT + AI for HVAC/maintenance; reduces utility costs 15-20%"],
+    ["Revenue Growth","Occupancy Optimization (62% to 80%)",2107942,0,2107942,6,"HIGH","Month 1-6","Marketing; referral network; shorter admit-to-bed time; alumni program"],
+    ["Revenue Growth","IOP/PHP Program Expansion",597750,0,597750,4,"HIGH","Month 1-6","Evening IOP; expand PHP capacity; add weekend programming"],
+    ["Revenue Growth","Annual Rate Increases (3-5%)",363102,0,363102,1,"MEDIUM","Annual","Annual payer contract renegotiation; acuity-based pricing"],
+    ["Revenue Growth","Payer Mix Optimization",250000,0,250000,6,"MEDIUM","Month 3-9","Increase commercial/private pay; reduce Medicaid dependency"],
+    ["Revenue Growth","Medication-Assisted Treatment (MAT)",400000,50000,350000,2,"MEDIUM","Month 6-12","Suboxone/Vivitrol clinic; high reimbursement rates; proven demand"],
+    ["Revenue Growth","Telehealth / Virtual IOP",300000,75000,225000,3,"LOW","Month 9-12","Extend geographic reach; lower overhead; evening/weekend programming"],
+    ["Roll-Up Strategy","Acquire Facility #2 (Gulf Coast)",1000000,7000000,-6000000,84,"HIGH","Year 2","Target: 60-120 beds; $4-8M revenue; 6-8x EBITDA; Louisiana/Mississippi"],
+    ["Roll-Up Strategy","Acquire Facility #3 (Gulf Coast)",1320000,9900000,-8580000,90,"HIGH","Year 3","Second tuck-in; platform reaches 302 beds; $20M+ revenue"],
+    ["Roll-Up Strategy","Centralize G&A Across Platform",350000,100000,250000,4,"HIGH","Year 2+","One exec team / CFO / HR / compliance across all facilities"],
+    ["Roll-Up Strategy","Shared Billing & RCM Platform",250000,150000,100000,7,"HIGH","Year 2+","Volume discounts; single billing team; improved negotiating leverage"],
+  ];
+
+  const csv = rows.map(r => r.map(v => {
+    const s = String(v);
+    return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s.replace(/"/g, '""')}"` : s;
+  }).join(",")).join("\n");
+
+  const blob = new Blob([csv], {type:"text/csv"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "Stoa_PE_Recommendations_April2026.csv";
+  a.click(); URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
