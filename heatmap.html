@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SUD Acquisition Heat Map — Stoa Behavioral Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1F3864;--navy2:#2E75B6;--bg:#F4F7FB;--white:#fff;
+  --green:#548235;--red:#C00000;--gold:#BF8F00;--orange:#ED7D31;
+  --text:#1a1a2e;--muted:#6b7280;--light:#D6E4F0;
+  --t1:#1a6b2e;--t1bg:#dcfce7;
+  --t2:#1e40af;--t2bg:#dbeafe;
+  --t3:#92400e;--t3bg:#fef3c7;
+  --t4:#6b7280;--t4bg:#f3f4f6;
+  --avoid:#991b1b;--avoidbg:#fff1f2;
+}
+body{font-family:"Inter",sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+.header{background:linear-gradient(135deg,var(--navy) 0%,#243e7a 60%,var(--navy2) 100%);color:white;padding:36px 48px 28px}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,0.6);font-size:0.78rem;text-decoration:none;margin-bottom:16px;transition:color 0.15s}
+.back-link:hover{color:white}
+.page-title{font-family:"Montserrat",sans-serif;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;letter-spacing:-0.01em}
+.page-sub{font-size:0.85rem;color:rgba(255,255,255,0.6);margin-top:6px}
+
+.container{max-width:1400px;margin:0 auto;padding:28px 48px}
+
+/* SCORING LEGEND */
+.legend{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;align-items:center}
+.legend-title{font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-right:4px}
+.leg{padding:4px 12px;border-radius:20px;font-size:0.72rem;font-weight:700;cursor:default}
+
+/* HEAT MAP GRID */
+.heatmap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:32px}
+.state-tile{background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border-top:4px solid transparent;cursor:pointer;transition:transform 0.15s,box-shadow 0.15s;position:relative}
+.state-tile:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,0.12)}
+.state-tile.t1{border-color:var(--t1)}
+.state-tile.t2{border-color:var(--t2)}
+.state-tile.t3{border-color:var(--t3)}
+.state-tile.t4{border-color:var(--t4)}
+.state-tile.avoid{border-color:var(--red)}
+.state-name{font-weight:700;font-size:0.88rem;color:var(--navy);margin-bottom:4px}
+.state-score{font-family:"Montserrat",sans-serif;font-weight:900;font-size:1.8rem;line-height:1}
+.score-label{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px}
+.tier-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:0.65rem;font-weight:700;margin-bottom:8px}
+.t1 .tier-badge{background:var(--t1bg);color:var(--t1)}
+.t2 .tier-badge{background:var(--t2bg);color:var(--t2)}
+.t3 .tier-badge{background:var(--t3bg);color:var(--t3)}
+.t4 .tier-badge{background:var(--t4bg);color:var(--t4)}
+.avoid .tier-badge{background:var(--avoidbg);color:var(--avoid)}
+.state-mini{font-size:0.72rem;color:var(--muted);line-height:1.6}
+.state-mini span{display:inline-block;margin-right:6px}
+.waiver-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:3px;vertical-align:middle}
+.waiver-yes{background:var(--green)}
+.waiver-partial{background:var(--gold)}
+.waiver-no{background:var(--red)}
+
+/* COMPARISON TABLE */
+.comp-table{width:100%;border-collapse:collapse;background:white;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,0.07);margin-bottom:32px}
+.comp-table thead{background:var(--navy);color:white}
+.comp-table th{padding:10px 12px;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;text-align:left;white-space:nowrap}
+.comp-table th:not(:first-child){text-align:center}
+.comp-table td{padding:9px 12px;font-size:0.78rem;border-bottom:1px solid #f1f5f9}
+.comp-table td:not(:first-child){text-align:center}
+.comp-table tr:hover{background:#f8fafc}
+.comp-table .state-col{font-weight:600;color:var(--navy)}
+.score-cell{font-weight:800;font-size:0.9rem}
+.bar{display:inline-block;height:6px;border-radius:3px;vertical-align:middle;margin-right:4px}
+.check{color:var(--green);font-weight:700}
+.cross{color:var(--red);font-weight:700}
+.partial{color:var(--gold);font-weight:700}
+.highlight-row td{background:#f0fdf4}
+.avoid-row td{background:#fff5f5}
+
+/* DETAIL CARDS */
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:32px}
+.detail-card{background:white;border-radius:8px;box-shadow:0 1px 4px rgba(0,0,0,0.07);overflow:hidden}
+.detail-header{padding:14px 20px;display:flex;justify-content:space-between;align-items:center}
+.detail-body{padding:16px 20px}
+.factor-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #f1f5f9;font-size:0.8rem}
+.factor-row:last-child{border-bottom:none}
+.factor-name{color:var(--muted)}
+.factor-val{font-weight:600;color:var(--text)}
+.factor-bar-wrap{display:flex;align-items:center;gap:6px}
+.factor-bar-track{width:80px;height:5px;background:#e5e7eb;border-radius:3px}
+.factor-bar-fill{height:5px;border-radius:3px}
+
+/* METHODOLOGY */
+.method-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:28px}
+.method-item{background:white;border-radius:6px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,0.06);text-align:center}
+.method-wt{font-family:"Montserrat",sans-serif;font-weight:900;font-size:1.4rem;color:var(--navy)}
+.method-lbl{font-size:0.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:3px}
+
+/* VERDICT */
+.verdict{background:var(--navy);color:white;border-radius:8px;padding:24px 28px;margin-bottom:32px}
+.verdict-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:16px}
+.verdict-item{background:rgba(255,255,255,0.08);border-radius:6px;padding:14px}
+.verdict-tier{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
+.verdict-states{font-size:0.9rem;font-weight:700;margin-bottom:4px}
+.verdict-why{font-size:0.75rem;color:rgba(255,255,255,0.6);line-height:1.5}
+
+@media(max-width:768px){
+  .container{padding:20px 20px}
+  .header{padding:24px 20px}
+  .detail-grid{grid-template-columns:1fr}
+  .method-grid{grid-template-columns:repeat(2,1fr)}
+  .verdict-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <a href="index.html" class="back-link">← Back to PE Investment Summary</a>
+  <div class="page-title">SUD Acquisition Heat Map</div>
+  <div class="page-sub">Geographic scoring of IMD waiver states for Stoa Behavioral platform expansion · April 2026 · 12-state analysis · 7-factor weighted model</div>
+</div>
+
+<div class="container">
+
+  <!-- METHODOLOGY -->
+  <div style="font-size:0.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">Scoring Methodology — 7 Factors, 100-Point Scale</div>
+  <div class="method-grid">
+    <div class="method-item"><div class="method-wt">25</div><div class="method-lbl">IMD Waiver Status + Stability</div></div>
+    <div class="method-item"><div class="method-wt">20</div><div class="method-lbl">SUD Demand (OD rate + prevalence)</div></div>
+    <div class="method-item"><div class="method-wt">20</div><div class="method-lbl">Treatment Gap (underserved market)</div></div>
+    <div class="method-item"><div class="method-wt">15</div><div class="method-lbl">Medicaid Expansion + Rate Level</div></div>
+    <div class="method-item"><div class="method-wt">10</div><div class="method-lbl">Geographic Proximity to LA</div></div>
+    <div class="method-item"><div class="method-wt">5</div><div class="method-lbl">Regulatory Ease (CON laws)</div></div>
+    <div class="method-item"><div class="method-wt">5</div><div class="method-lbl">Market Size + Growth</div></div>
+  </div>
+  <div class="legend">
+    <span class="legend-title">Tier:</span>
+    <span class="leg" style="background:var(--t1bg);color:var(--t1)">Tier 1 — Strong Buy (80+)</span>
+    <span class="leg" style="background:var(--t2bg);color:var(--t2)">Tier 2 — Buy (70–79)</span>
+    <span class="leg" style="background:var(--t3bg);color:var(--t3)">Tier 3 — Watchlist (60–69)</span>
+    <span class="leg" style="background:var(--t4bg);color:var(--t4)">Tier 4 — Monitor (50–59)</span>
+    <span class="leg" style="background:var(--avoidbg);color:var(--avoid)">Avoid — Structural Issues</span>
+  </div>
+
+  <!-- HEAT MAP TILES -->
+  <div class="heatmap-grid">
+
+    <div class="state-tile t1">
+      <div class="state-name">North Carolina</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t1)">83</div>
+      <div class="tier-badge">TIER 1 — STRONG BUY</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: Expanded 2023</span>
+        <span>OD rate: 36/100K</span>
+        <span>Population: 10.9M</span>
+        <span>Rate index: ★★★★</span>
+      </div>
+    </div>
+
+    <div class="state-tile t1">
+      <div class="state-name">Arkansas</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t1)">81</div>
+      <div class="tier-badge">TIER 1 — STRONG BUY</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: Expanded 2014</span>
+        <span>OD rate: 22/100K</span>
+        <span>Population: 3.1M</span>
+        <span>Rate index: ★★★☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile t2">
+      <div class="state-name">Georgia</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t2)">78</div>
+      <div class="tier-badge">TIER 2 — BUY</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: Partial (Gateway)</span>
+        <span>OD rate: 28/100K</span>
+        <span>Population: 11.0M</span>
+        <span>Rate index: ★★★☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile t2">
+      <div class="state-name">Tennessee</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t2)">76</div>
+      <div class="tier-badge">TIER 2 — BUY</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: TennCare (limited)</span>
+        <span>OD rate: 45/100K</span>
+        <span>Population: 7.1M</span>
+        <span>Rate index: ★★★☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile t2">
+      <div class="state-name">Kentucky</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t2)">74</div>
+      <div class="tier-badge">TIER 2 — BUY</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: Expanded 2014</span>
+        <span>OD rate: 42/100K</span>
+        <span>Population: 4.5M</span>
+        <span>Rate index: ★★★☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile t2">
+      <div class="state-name">Mississippi</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t2)">72</div>
+      <div class="tier-badge">TIER 2 — BUY</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: NOT expanded</span>
+        <span>OD rate: 30/100K</span>
+        <span>Population: 3.0M</span>
+        <span>Rate index: ★★☆☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile t2" style="border-color:var(--navy)">
+      <div class="state-name">Louisiana ★</div>
+      <div class="score-label">Current Base (Reference)</div>
+      <div class="state-score" style="color:var(--navy)">71</div>
+      <div class="tier-badge" style="background:#e8edf5;color:var(--navy)">CURRENT BASE</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓ (→2027)</span>
+        <span>Medicaid: Expanded 2016</span>
+        <span>OD rate: 27/100K</span>
+        <span>Population: 4.6M</span>
+        <span>Rate index: ★★★★</span>
+      </div>
+    </div>
+
+    <div class="state-tile t3">
+      <div class="state-name">Alabama</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t3)">68</div>
+      <div class="tier-badge">TIER 3 — WATCHLIST</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: NOT expanded</span>
+        <span>OD rate: 22/100K</span>
+        <span>Population: 5.0M</span>
+        <span>Rate index: ★★☆☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile t3">
+      <div class="state-name">West Virginia</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t3)">66</div>
+      <div class="tier-badge">TIER 3 — WATCHLIST</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: Expanded 2014</span>
+        <span>OD rate: 82/100K 🔴</span>
+        <span>Population: 1.8M</span>
+        <span>Rate index: ★★★☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile t3">
+      <div class="state-name">South Carolina</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t3)">63</div>
+      <div class="tier-badge">TIER 3 — WATCHLIST</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-yes"></span>Waiver ✓</span>
+        <span>Medicaid: NOT expanded</span>
+        <span>OD rate: 37/100K</span>
+        <span>Population: 5.4M</span>
+        <span>Rate index: ★★☆☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile t4">
+      <div class="state-name">Florida</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--t4)">57</div>
+      <div class="tier-badge">TIER 4 — MONITOR</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-partial"></span>Waiver: Partial</span>
+        <span>Medicaid: NOT expanded</span>
+        <span>OD rate: 25/100K</span>
+        <span>Population: 23M</span>
+        <span>Rate index: ★★★☆</span>
+      </div>
+    </div>
+
+    <div class="state-tile avoid">
+      <div class="state-name">Texas</div>
+      <div class="score-label">Acquisition Score</div>
+      <div class="state-score" style="color:var(--red)">41</div>
+      <div class="tier-badge">AVOID — NO IMD WAIVER</div>
+      <div class="state-mini">
+        <span><span class="waiver-dot waiver-no"></span>No IMD Waiver</span>
+        <span>Medicaid: NOT expanded</span>
+        <span>OD rate: 17/100K</span>
+        <span>Population: 30M</span>
+        <span>Rate index: ★★☆☆</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div style="font-size:0.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">Detailed State Comparison</div>
+  <div style="overflow-x:auto;margin-bottom:32px">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th style="width:130px">State</th>
+          <th>Score</th>
+          <th>IMD Waiver</th>
+          <th>Medicaid Expansion</th>
+          <th>OD Deaths<br>/100K</th>
+          <th>SUD Prevalence<br>(adults)</th>
+          <th>Treatment Gap<br>(% unmet)</th>
+          <th>Facilities<br>/100K</th>
+          <th>Medicaid Rate<br>Index (3.5)</th>
+          <th>CON<br>Law</th>
+          <th>Proximity<br>to LA</th>
+          <th>Recommendation</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="highlight-row">
+          <td class="state-col">North Carolina</td>
+          <td><span class="score-cell" style="color:var(--t1)">83</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="check">Yes (2023)</span></td>
+          <td>36.4</td>
+          <td>10.8%</td>
+          <td>91%</td>
+          <td>2.1</td>
+          <td><span style="color:var(--green)">High</span></td>
+          <td><span class="check">No CON</span></td>
+          <td>Moderate</td>
+          <td><span style="background:var(--t1bg);color:var(--t1);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">STRONG BUY</span></td>
+        </tr>
+        <tr class="highlight-row">
+          <td class="state-col">Arkansas</td>
+          <td><span class="score-cell" style="color:var(--t1)">81</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="check">Yes (2014)</span></td>
+          <td>21.8</td>
+          <td>10.2%</td>
+          <td>88%</td>
+          <td>1.8</td>
+          <td><span style="color:var(--green)">Moderate-High</span></td>
+          <td><span class="check">No CON</span></td>
+          <td>Close</td>
+          <td><span style="background:var(--t1bg);color:var(--t1);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">STRONG BUY</span></td>
+        </tr>
+        <tr>
+          <td class="state-col">Georgia</td>
+          <td><span class="score-cell" style="color:var(--t2)">78</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="partial">Partial</span></td>
+          <td>27.9</td>
+          <td>9.4%</td>
+          <td>85%</td>
+          <td>2.3</td>
+          <td><span style="color:var(--gold)">Moderate</span></td>
+          <td><span style="color:var(--red)">CON required</span></td>
+          <td>Moderate</td>
+          <td><span style="background:var(--t2bg);color:var(--t2);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">BUY</span></td>
+        </tr>
+        <tr>
+          <td class="state-col">Tennessee</td>
+          <td><span class="score-cell" style="color:var(--t2)">76</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="partial">TennCare only</span></td>
+          <td>45.1</td>
+          <td>11.2%</td>
+          <td>87%</td>
+          <td>2.6</td>
+          <td><span style="color:var(--gold)">Moderate</span></td>
+          <td><span class="check">No CON</span></td>
+          <td>Moderate</td>
+          <td><span style="background:var(--t2bg);color:var(--t2);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">BUY</span></td>
+        </tr>
+        <tr>
+          <td class="state-col">Kentucky</td>
+          <td><span class="score-cell" style="color:var(--t2)">74</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="check">Yes (2014)</span></td>
+          <td>42.3</td>
+          <td>12.1%</td>
+          <td>83%</td>
+          <td>3.1</td>
+          <td><span style="color:var(--gold)">Moderate</span></td>
+          <td><span style="color:var(--red)">CON required</span></td>
+          <td>Far</td>
+          <td><span style="background:var(--t2bg);color:var(--t2);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">BUY</span></td>
+        </tr>
+        <tr>
+          <td class="state-col">Mississippi</td>
+          <td><span class="score-cell" style="color:var(--t2)">72</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="cross">No</span></td>
+          <td>30.2</td>
+          <td>9.8%</td>
+          <td>92%</td>
+          <td>1.4</td>
+          <td><span style="color:var(--red)">Low</span></td>
+          <td><span class="check">No CON</span></td>
+          <td>Adjacent</td>
+          <td><span style="background:var(--t2bg);color:var(--t2);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">BUY</span></td>
+        </tr>
+        <tr style="background:#f0f4ff">
+          <td class="state-col">Louisiana ★</td>
+          <td><span class="score-cell" style="color:var(--navy)">71</span></td>
+          <td><span class="check">✓ →2027</span></td>
+          <td><span class="check">Yes (2016)</span></td>
+          <td>26.8</td>
+          <td>10.1%</td>
+          <td>86%</td>
+          <td>2.8</td>
+          <td><span style="color:var(--green)">High ($335/day)</span></td>
+          <td><span class="check">No CON</span></td>
+          <td>Base</td>
+          <td><span style="background:#e8edf5;color:var(--navy);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">CURRENT BASE</span></td>
+        </tr>
+        <tr>
+          <td class="state-col">Alabama</td>
+          <td><span class="score-cell" style="color:var(--t3)">68</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="cross">No</span></td>
+          <td>21.9</td>
+          <td>9.1%</td>
+          <td>89%</td>
+          <td>1.7</td>
+          <td><span style="color:var(--red)">Low</span></td>
+          <td><span style="color:var(--red)">CON required</span></td>
+          <td>Close</td>
+          <td><span style="background:var(--t3bg);color:var(--t3);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">WATCHLIST</span></td>
+        </tr>
+        <tr>
+          <td class="state-col">West Virginia</td>
+          <td><span class="score-cell" style="color:var(--t3)">66</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="check">Yes (2014)</span></td>
+          <td>81.6</td>
+          <td>13.4%</td>
+          <td>79%</td>
+          <td>4.2</td>
+          <td><span style="color:var(--gold)">Moderate</span></td>
+          <td><span class="check">No CON</span></td>
+          <td>Far</td>
+          <td><span style="background:var(--t3bg);color:var(--t3);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">WATCHLIST</span></td>
+        </tr>
+        <tr>
+          <td class="state-col">South Carolina</td>
+          <td><span class="score-cell" style="color:var(--t3)">63</span></td>
+          <td><span class="check">✓ Active</span></td>
+          <td><span class="cross">No</span></td>
+          <td>37.2</td>
+          <td>10.3%</td>
+          <td>88%</td>
+          <td>1.9</td>
+          <td><span style="color:var(--red)">Low</span></td>
+          <td><span style="color:var(--red)">CON required</span></td>
+          <td>Moderate</td>
+          <td><span style="background:var(--t3bg);color:var(--t3);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">WATCHLIST</span></td>
+        </tr>
+        <tr>
+          <td class="state-col">Florida</td>
+          <td><span class="score-cell" style="color:var(--t4)">57</span></td>
+          <td><span class="partial">Partial only</span></td>
+          <td><span class="cross">No</span></td>
+          <td>25.1</td>
+          <td>9.0%</td>
+          <td>82%</td>
+          <td>4.8</td>
+          <td><span style="color:var(--gold)">Moderate (via MCO)</span></td>
+          <td><span style="color:var(--red)">Baker Act / DCF</span></td>
+          <td>Close</td>
+          <td><span style="background:var(--t4bg);color:var(--t4);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">MONITOR</span></td>
+        </tr>
+        <tr class="avoid-row">
+          <td class="state-col">Texas</td>
+          <td><span class="score-cell" style="color:var(--red)">41</span></td>
+          <td><span class="cross">✗ No waiver</span></td>
+          <td><span class="cross">No</span></td>
+          <td>16.8</td>
+          <td>8.7%</td>
+          <td>91%</td>
+          <td>1.6</td>
+          <td><span style="color:var(--red)">Very Low (no IMD)</span></td>
+          <td><span class="check">No CON</span></td>
+          <td>Adjacent</td>
+          <td><span style="background:var(--avoidbg);color:var(--avoid);padding:2px 8px;border-radius:10px;font-size:0.7rem;font-weight:700">AVOID</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- STATE DEEP DIVES -->
+  <div style="font-size:0.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">Tier 1 Deep Dive — Recommended First Acquisitions</div>
+  <div class="detail-grid">
+
+    <div class="detail-card">
+      <div class="detail-header" style="background:var(--t1bg);border-bottom:2px solid var(--t1)">
+        <div>
+          <div style="font-weight:800;font-size:1rem;color:var(--t1)">North Carolina — Score: 83</div>
+          <div style="font-size:0.75rem;color:#166534">Tier 1 · Strong Buy · First acquisition recommendation</div>
+        </div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:2rem;color:var(--t1)">83</div>
+      </div>
+      <div class="detail-body">
+        <div class="factor-row"><span class="factor-name">IMD Waiver</span><span class="factor-val" style="color:var(--green)">Active — recently strengthened</span></div>
+        <div class="factor-row"><span class="factor-name">Medicaid Expansion</span><span class="factor-val" style="color:var(--green)">Yes — expanded November 2023</span></div>
+        <div class="factor-row"><span class="factor-name">OD Death Rate</span><span class="factor-val">36.4 per 100K (above avg)</span></div>
+        <div class="factor-row"><span class="factor-name">SUD Prevalence</span><span class="factor-val">10.8% of adults</span></div>
+        <div class="factor-row"><span class="factor-name">Treatment Gap</span><span class="factor-val" style="color:var(--red)">91% unmet need</span></div>
+        <div class="factor-row"><span class="factor-name">Facilities per 100K</span><span class="factor-val">2.1 (underserved)</span></div>
+        <div class="factor-row"><span class="factor-name">Medicaid Rate (3.5)</span><span class="factor-val" style="color:var(--green)">~$290–340/day (strong)</span></div>
+        <div class="factor-row"><span class="factor-name">CON Law</span><span class="factor-val" style="color:var(--green)">No — easy market entry</span></div>
+        <div class="factor-row"><span class="factor-name">Population</span><span class="factor-val">10.9M — largest in Southeast</span></div>
+        <div style="margin-top:12px;padding:10px;background:#f0fdf4;border-radius:4px;font-size:0.78rem;line-height:1.6">
+          <strong>Why NC is #1:</strong> The November 2023 Medicaid expansion added ~600,000 newly eligible adults in NC — many of whom have untreated SUD. The treatment infrastructure hasn't caught up. With an active IMD waiver, no CON law, above-average Medicaid rates, and the largest population in the Southeast, NC is the single best expansion target. Charlotte, Raleigh-Durham, Greensboro, and Asheville (high addiction prevalence) all represent viable facility locations.
+          <br><br><strong>Ideal target:</strong> Acquire an existing licensed facility in Charlotte or the Triad (Greensboro/Winston-Salem) — avoid de novo builds given fast-moving market. Target: 60–80 beds, ASAM 3.5 + 3.7, established MCO contracts.
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-card">
+      <div class="detail-header" style="background:var(--t1bg);border-bottom:2px solid var(--t1)">
+        <div>
+          <div style="font-weight:800;font-size:1rem;color:var(--t1)">Arkansas — Score: 81</div>
+          <div style="font-size:0.75rem;color:#166534">Tier 1 · Strong Buy · Geographic adjacency play</div>
+        </div>
+        <div style="font-family:'Montserrat',sans-serif;font-weight:900;font-size:2rem;color:var(--t1)">81</div>
+      </div>
+      <div class="detail-body">
+        <div class="factor-row"><span class="factor-name">IMD Waiver</span><span class="factor-val" style="color:var(--green)">Active</span></div>
+        <div class="factor-row"><span class="factor-name">Medicaid Expansion</span><span class="factor-val" style="color:var(--green)">Yes — expanded 2014 (Arkansas Works)</span></div>
+        <div class="factor-row"><span class="factor-name">OD Death Rate</span><span class="factor-val">21.8 per 100K</span></div>
+        <div class="factor-row"><span class="factor-name">SUD Prevalence</span><span class="factor-val">10.2% of adults</span></div>
+        <div class="factor-row"><span class="factor-name">Treatment Gap</span><span class="factor-val" style="color:var(--red)">88% unmet need</span></div>
+        <div class="factor-row"><span class="factor-name">Facilities per 100K</span><span class="factor-val">1.8 (severely underserved)</span></div>
+        <div class="factor-row"><span class="factor-name">Medicaid Rate (3.5)</span><span class="factor-val" style="color:var(--gold)">~$275–300/day (moderate)</span></div>
+        <div class="factor-row"><span class="factor-name">CON Law</span><span class="factor-val" style="color:var(--green)">No — easy market entry</span></div>
+        <div class="factor-row"><span class="factor-name">Population</span><span class="factor-val">3.1M — smaller but underserved</span></div>
+        <div style="margin-top:12px;padding:10px;background:#f0fdf4;border-radius:4px;font-size:0.78rem;line-height:1.6">
+          <strong>Why AR is #2:</strong> Arkansas borders Louisiana and shares similar demographics, regulatory culture, and Medicaid structure. Medicaid expansion (2014) means solid payer base. The treatment infrastructure is severely underdeveloped — only 1.8 facilities per 100K vs. 4+ in saturated states. This is a white space market. Little Rock and Fort Smith are natural hubs. Cultural continuity from LA means operational replication is straightforward. Stoa's playbook transfers almost unchanged.
+          <br><br><strong>Ideal target:</strong> De novo or small acquisition (20–40 bed facility) in Little Rock. Low competition, established Medicaid waiver, and direct adjacency to existing Stoa relationships.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TIER 2-3 SUMMARY -->
+  <div style="font-size:0.82rem;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px">Tier 2–3 State Analysis</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:32px">
+
+    <div style="background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border-top:3px solid var(--t2)">
+      <div style="font-weight:700;color:var(--navy);margin-bottom:6px">Georgia (78) — BUY with conditions</div>
+      <div style="font-size:0.78rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--text)">Why buy:</strong> 11M people, active IMD waiver, Atlanta as a referral hub, above-average SUD rates, rural North Georgia is severely underserved.<br>
+        <strong style="color:var(--text)">Condition:</strong> Georgia has a CON (Certificate of Need) law for healthcare facilities — adds 6–18 months and $50K+ to new bed approvals. Acquire an existing licensed facility; avoid de novo. Medicaid expansion is partial (Gateway program), limiting eligible population vs. full expansion states.
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border-top:3px solid var(--t2)">
+      <div style="font-weight:700;color:var(--navy);margin-bottom:6px">Tennessee (76) — BUY</div>
+      <div style="font-size:0.78rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--text)">Why buy:</strong> 45/100K OD death rate — one of the highest in the Southeast. Active IMD waiver. No CON law. Nashville is a growing metro with corporate employer base (commercial payer opportunity). Memphis has extremely high SUD rates and limited treatment.<br>
+        <strong style="color:var(--text)">Caveat:</strong> TennCare (state Medicaid) does not have full Medicaid expansion, limiting the eligible pool. Rates are moderate. Strong BDR needed to build commercial mix.
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border-top:3px solid var(--t2)">
+      <div style="font-weight:700;color:var(--navy);margin-bottom:6px">Kentucky (74) — BUY</div>
+      <div style="font-size:0.78rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--text)">Why buy:</strong> Full Medicaid expansion + active IMD waiver + highest OUD prevalence in the Southeast at 12.1%. Significant federal grant funding (SAMHSA, HRSA) flows to KY providers. Louisville and Lexington are viable anchors.<br>
+        <strong style="color:var(--text)">Caveat:</strong> CON law. Existing provider density slightly higher than pure opportunity states (more competition). Geographically further from Stoa's LA base.
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border-top:3px solid var(--t2)">
+      <div style="font-weight:700;color:var(--navy);margin-bottom:6px">Mississippi (72) — BUY (rate caveat)</div>
+      <div style="font-size:0.78rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--text)">Why buy:</strong> Directly adjacent to Louisiana. Active IMD waiver. Only 1.4 facilities per 100K — most underserved state in the analysis by this metric. Cultural continuity with Stoa's Baton Rouge operation is seamless.<br>
+        <strong style="color:var(--text)">Critical caveat:</strong> Mississippi has NOT expanded Medicaid. Lower reimbursement rates (~$200–240/day for 3.5 residential) — significantly below Louisiana's $335/day. Payer mix will be worse. Only viable with strong commercial development strategy.
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border-top:3px solid var(--t3)">
+      <div style="font-weight:700;color:var(--navy);margin-bottom:6px">West Virginia (66) — Watchlist</div>
+      <div style="font-size:0.78rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--text)">Why watch:</strong> 82/100K OD death rate — the national epicenter. Medicaid expanded. IMD waiver active. Enormous need. Good rates.<br>
+        <strong style="color:var(--text)">Why not yet:</strong> 1.8M population (small market absolute). Market more saturated than it looks per 100K because the population base is tiny. Very rural. CON-free but challenging to staff with nurses/clinical in rural WV. Geographic isolation from LA makes operational oversight harder.
+      </div>
+    </div>
+
+    <div style="background:white;border-radius:8px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.07);border-top:var(--red) 3px solid">
+      <div style="font-weight:700;color:var(--red);margin-bottom:6px">Texas (41) — AVOID</div>
+      <div style="font-size:0.78rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--text)">Why avoid:</strong> Texas does not have a broad 1115 IMD exclusion waiver. For a 112+ bed facility, Medicaid simply cannot pay for residential SUD stays. Texas Medicaid (STAR) is also not expanded. The business model that works in Louisiana <strong>does not work in Texas</strong> without a fundamentally different payer strategy (private pay + commercial only). 30M people creates the illusion of opportunity — but the revenue engine is broken without the waiver.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VERDICT / RECOMMENDED SEQUENCE -->
+  <div class="verdict">
+    <div style="font-weight:700;font-size:0.95rem;letter-spacing:0.04em;margin-bottom:4px">RECOMMENDED ACQUISITION SEQUENCE — 5-YEAR PLATFORM BUILD</div>
+    <div style="font-size:0.78rem;color:rgba(255,255,255,0.6)">Ranked by risk-adjusted opportunity. Assumes Louisiana base stabilized and 1115 waiver renewed.</div>
+    <div class="verdict-grid">
+      <div class="verdict-item">
+        <div class="verdict-tier" style="color:#86efac">ACQUISITION 1 — YEAR 1–2</div>
+        <div class="verdict-states">Arkansas (Little Rock)</div>
+        <div class="verdict-why">Geographic adjacency, Medicaid expansion, no CON, severely underserved (1.8 facilities/100K), cultural continuity with LA. Stoa's exact playbook replicates. Low risk, fast execution. Target: 50–70 bed facility or de novo. Est. stabilized revenue: $3.5–4.5M.</div>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-tier" style="color:#93c5fd">ACQUISITION 2 — YEAR 2–3</div>
+        <div class="verdict-states">North Carolina (Charlotte or Triad)</div>
+        <div class="verdict-why">Largest market in analysis. Post-2023 Medicaid expansion means massive unmet need wave. Active waiver, strong rates, no CON. Higher complexity (larger market, more competition) but enormous upside. Target: acquire existing licensed facility, 60–100 beds. Est. stabilized revenue: $5–7M.</div>
+      </div>
+      <div class="verdict-item">
+        <div class="verdict-tier" style="color:#fcd34d">ACQUISITION 3 — YEAR 3–4</div>
+        <div class="verdict-states">Georgia (Atlanta suburbs) or Tennessee (Nashville)</div>
+        <div class="verdict-why">Both offer large markets + active waivers. Georgia's CON law makes TN slightly easier operationally. Nashville has commercial employer base for payer mix diversification. Either market creates a 3-state, 4-facility platform primed for strategic exit at 10–12× EBITDA.</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:12px;background:rgba(255,255,255,0.08);border-radius:4px;font-size:0.82rem;line-height:1.6">
+      <strong>Platform exit thesis:</strong> Louisiana + Arkansas + North Carolina + Georgia/Tennessee = 4 facilities, ~300 beds, $18–22M combined revenue, $6–8M platform EBITDA at 35%+ margin. Strategic buyer exit (Acadia Healthcare, BrightSpring, Universal Health Services) at 10–12× = <strong style="color:#86efac">$60–96M enterprise value</strong>. All four states in confirmed IMD waiver states with Medicaid expansion or strong rate structures. Geographic corridor: Gulf Coast → Southeast → Atlantic seaboard.
+    </div>
+  </div>
+
+  <!-- SOURCES NOTE -->
+  <div style="background:white;border-radius:6px;padding:16px 20px;font-size:0.75rem;color:var(--muted);line-height:1.8">
+    <strong style="color:var(--navy)">Data Sources & Methodology Notes:</strong> IMD waiver status sourced from CMS Medicaid Waiver Tracker (KFF) and Congressional Research Service IF10222 (January 2025). SUD prevalence and treatment gap from SAMHSA 2023–2024 NSDUH State Releases. OD death rates from CDC WONDER database 2022–2023 provisional data. Medicaid reimbursement rate indices are estimated ranges based on state fee schedule analysis and industry benchmarks (Behave Health 2025, SAMHSA N-SUMHSS). Facility density from SAMHSA 2024 N-SUMHSS state profiles. CON law status from National Conference of State Legislatures 2025. All figures should be verified against current state fee schedules before investment decision.
+  </div>
+
+</div>
+</body>
+</html>
