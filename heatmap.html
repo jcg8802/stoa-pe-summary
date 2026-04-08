@@ -22,6 +22,10 @@ body{font-family:"Inter",sans-serif;background:var(--bg);color:var(--text);font-
 .header{background:linear-gradient(135deg,var(--navy) 0%,#243e7a 60%,var(--navy2) 100%);color:white;padding:36px 48px 28px}
 .back-link{display:inline-flex;align-items:center;gap:6px;color:rgba(255,255,255,0.6);font-size:0.78rem;text-decoration:none;margin-bottom:16px;transition:color 0.15s}
 .back-link:hover{color:white}
+.nav-bar{background:rgba(0,0,0,0.25);padding:12px 48px;display:flex;gap:8px;flex-wrap:wrap}
+.nav-bar a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.78rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;padding:6px 14px;border-radius:3px;transition:all 0.15s}
+.nav-bar a:hover{color:white;background:rgba(255,255,255,0.1)}
+.nav-bar a.active{color:white;background:rgba(255,255,255,0.18)}
 .page-title{font-family:"Montserrat",sans-serif;font-size:clamp(1.4rem,3vw,2.2rem);font-weight:900;letter-spacing:-0.01em}
 .page-sub{font-size:0.85rem;color:rgba(255,255,255,0.6);margin-top:6px}
 
@@ -113,8 +117,12 @@ body{font-family:"Inter",sans-serif;background:var(--bg);color:var(--text);font-
 <body>
 
 <div class="header">
-  <a href="index.html" class="back-link">← Back to PE Investment Summary</a>
-  <div class="page-title">SUD Acquisition Heat Map</div>
+  <div class="nav-bar">
+    <a href="index.html">PE Investment Summary</a>
+    <a href="heatmap.html" class="active">State Heat Map</a>
+    <a href="cities.html">City Rankings</a>
+  </div>
+  <div class="page-title" style="margin-top:20px">SUD Acquisition Heat Map</div>
   <div class="page-sub">Geographic scoring of IMD waiver states for Stoa Behavioral platform expansion · April 2026 · 12-state analysis · 7-factor weighted model</div>
 </div>
 
